@@ -8,7 +8,3 @@ This is a simple chat created for the first lab of the Msc course Advanced Softw
 - Run `rmiregistry`.
 - Run the `Server` class with Java. It should output `Server ready`.
 - Run the `Client` class with Java. It should output `Ready to chat!`.
-
-## For devs
-
-Simply open the project in IntelliJ.
