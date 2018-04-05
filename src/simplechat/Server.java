@@ -1,5 +1,6 @@
 package simplechat;
 
+import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
@@ -7,10 +8,6 @@ import java.rmi.server.UnicastRemoteObject;
 public class Server implements API {
 
     public Server() {}
-
-    public String sayHello() {
-        return "API, world!";
-    }
 
     public static void main(String args[]) {
 
@@ -30,5 +27,50 @@ public class Server implements API {
             System.err.println("Server exception: " + e.toString());
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public String sayHello() {
+        return "Hello, world!";
+    }
+
+    @Override
+    public String connexionStart() {
+        return null;
+    }
+
+    @Override
+    public String connexionStop() {
+        return null;
+    }
+
+    @Override
+    public String chatSessionRequest() {
+        return null;
+    }
+
+    @Override
+    public String chatSessionAccept() {
+        return null;
+    }
+
+    @Override
+    public String chatSessionDecline() {
+        return null;
+    }
+
+    @Override
+    public String chatSessionSendMessage() {
+        return null;
+    }
+
+    @Override
+    public String chatSessionQuit() {
+        return null;
+    }
+
+    @Override
+    public String memberListRequest() {
+        return null;
     }
 }

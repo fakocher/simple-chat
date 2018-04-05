@@ -17,7 +17,7 @@ public class Client {
             API api = (API) registry.lookup("API");
 
             // Ready message
-            System.out.println("Ready to chat !.");
+            System.out.println("Ready to chat!");
 
             // Start the user input infinite loop
             Scanner inputScan = new Scanner(System.in);
