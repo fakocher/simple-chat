@@ -1,50 +1,94 @@
 package simplechat;
 
+import simplechat.client.ChatSessionManager;
+import simplechat.client.ConnexionManager;
+import simplechat.client.MemberListManager;
+
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Scanner;
 
 public class Client {
 
-    private Client() {}
-
-    public static void main(String[] args) {
-
+    public static void main(String[] args)
+    {
+        // Get hostname from program arguments
         String host = (args.length < 1) ? null : args[0];
 
-        try {
+        try
+        {
+            // Get API object from server
             Registry registry = LocateRegistry.getRegistry(host);
             API api = (API) registry.lookup("API");
 
+            // Init managers
+            ConnexionManager connexionManager = new ConnexionManager(api);
+            ChatSessionManager chatSessionManager = new ChatSessionManager(api);
+            MemberListManager memberListManager = new MemberListManager(api);
+
             // Ready message
-            System.out.println("Ready to chat!");
+            System.out.println("Ready to chat! use `connect <username>` first.");
 
             // Start the user input infinite loop
             Scanner inputScan = new Scanner(System.in);
             while(true)
             {
-                // Handle input
+                // Ask for input
                 System.out.print("> ");
-                switch(inputScan.nextLine())
+                String in = inputScan.nextLine();
+
+                // To connect to the chat
+                if (in.startsWith("connect"))
                 {
-                    // To quit the app
-                    case "exit":
-                    case "quit":
-                        System.exit(0);
-                        break;
+                    // Get username, error if not specified
+                    String[] split = in.split(" ");
+                    if (split.length == 1)
+                    {
+                        System.out.println("Please specify a username.");
+                    }
+                    else
+                    {
+                        String username = split[1];
 
-                    // To test the API
-                    case "hello":
-                        String response = api.sayHello();
-                        System.out.println("response: " + response);
-                        break;
+                        // Connect to the server
+                        System.out.println(connexionManager.start(username));
+                    }
+                }
 
-                    default:
-                        System.out.println("Invalid command.");
-                        break;
+                // To disconnect from the chat
+                else if (in.equals("disconnect"))
+                {
+                    System.out.println(connexionManager.stop());
+                }
+
+                // To show the member list
+                else if (in.equals("showmembers"))
+                {
+                    System.out.println(memberListManager.get());
+                }
+
+                // To exit the app
+                else if(in.equals("exit"))
+                {
+                    System.exit(0);
+                }
+
+                // To test the API
+                else if (in.equals("hello"))
+                {
+                    String response = api.sayHello();
+                    System.out.println("response: " + response);
+                }
+
+                // Error message if command is invalid
+                else
+                {
+                    System.out.println("Invalid command.");
                 }
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.err.println("Client exception: " + e.toString());
             e.printStackTrace();
         }
