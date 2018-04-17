@@ -17,14 +17,14 @@ public class Client {
 
         try
         {
-            // Get API object from server
+            // Get serverAPI object from server
             Registry registry = LocateRegistry.getRegistry(host);
-            API api = (API) registry.lookup("API");
+            serverAPI serverApi = (serverAPI) registry.lookup("serverAPI");
 
             // Init managers
-            ConnexionManager connexionManager = new ConnexionManager(api);
-            ChatSessionManager chatSessionManager = new ChatSessionManager(api);
-            MemberListManager memberListManager = new MemberListManager(api);
+            ConnexionManager connexionManager = new ConnexionManager(serverApi);
+            ChatSessionManager chatSessionManager = new ChatSessionManager(serverApi);
+            MemberListManager memberListManager = new MemberListManager(serverApi);
 
             // Ready message
             System.out.println("Ready to chat! use `connect <username>` first.");
@@ -73,10 +73,10 @@ public class Client {
                     System.exit(0);
                 }
 
-                // To test the API
+                // To test the serverAPI
                 else if (in.equals("hello"))
                 {
-                    String response = api.sayHello();
+                    String response = serverApi.sayHello();
                     System.out.println("response: " + response);
                 }
 

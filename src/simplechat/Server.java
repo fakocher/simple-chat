@@ -2,17 +2,15 @@ package simplechat;
 
 import simplechat.server.ConnexionManager;
 import simplechat.server.ChatSessionManager;
-import simplechat.server.Member;
 import simplechat.server.MemberListManager;
 
-import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.RemoteServer;
 import java.rmi.server.UnicastRemoteObject;
 import java.rmi.server.ServerNotActiveException;
 
-public class Server implements API {
+public class Server implements serverAPI {
 
     ConnexionManager connexionManager = new ConnexionManager();
     ChatSessionManager chatSessionManager = new ChatSessionManager();
@@ -23,11 +21,11 @@ public class Server implements API {
         try
         {
             Server obj = new Server();
-            API stub = (API) UnicastRemoteObject.exportObject(obj, 0);
+            serverAPI stub = (serverAPI) UnicastRemoteObject.exportObject(obj, 0);
 
             // Bind the remote object's stub in the registry
             Registry registry = LocateRegistry.getRegistry();
-            registry.bind("API", stub);
+            registry.bind("serverAPI", stub);
 
             System.out.println("Server ready");
 
@@ -71,7 +69,6 @@ public class Server implements API {
         return "Connected to the chat with username \"" + username + "\".";
     }
 
-    // TODO
     @Override
     public String connexionStop() throws ServerNotActiveException
     {

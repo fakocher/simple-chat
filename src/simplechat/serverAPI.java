@@ -4,7 +4,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.ServerNotActiveException;
 
-public interface API extends Remote {
+public interface serverAPI extends Remote {
     String sayHello() throws RemoteException;
 
     String connexionStart(String username) throws RemoteException, ServerNotActiveException;

@@ -1,18 +1,18 @@
 package simplechat.client;
 
-import simplechat.API;
+import simplechat.serverAPI;
 
 import java.rmi.RemoteException;
 
 public class ChatSessionManager {
 
-    private API api;
+    private serverAPI serverApi;
 
-    public ChatSessionManager(API api) {
-        this.api = api;
+    public ChatSessionManager(serverAPI serverApi) {
+        this.serverApi = serverApi;
     }
 
     public String showRequests() throws RemoteException {
-        return this.api.chatSessionShowRequests();
+        return this.serverApi.chatSessionShowRequests();
     }
 }
