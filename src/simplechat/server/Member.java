@@ -1,21 +1,37 @@
 package simplechat.server;
 
-public class Member {
+import simplechat.client.ClientAPI;
+
+import java.util.UUID;
+
+class Member {
 
     private String username;
     private String clientHost;
+    private UUID uuid;
+    private ClientAPI clientAPI;
 
-    public Member(String username, String clientHost)
+    Member(String username, String clientHost, UUID uuid, ClientAPI clientAPI)
     {
         this.username = username;
         this.clientHost = clientHost;
+        this.uuid = uuid;
+        this.clientAPI = clientAPI;
     }
 
-    public String getClientHost() {
+    String getClientHost() {
         return clientHost;
     }
 
-    public String getUsername() {
+    UUID getClientUUID() {
+        return uuid;
+    }
+
+    String getUsername() {
         return username;
+    }
+
+    ClientAPI getClientAPI() {
+        return clientAPI;
     }
 }

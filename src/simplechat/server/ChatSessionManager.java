@@ -1,16 +1,23 @@
 package simplechat.server;
 
+import simplechat.client.ClientAPI;
+
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public class ChatSessionManager {
 	private ArrayList<Session> sessionList = new ArrayList<>();
-	MemberListManager memberManager=new MemberListManager();
-	
-	public String chatSessionRequest(Member requester, String destName,MemberListManager memberManger) {
-    	Member dest = memberManager.getByName(destName);
+	private MemberListManager memberListManager;
+
+	ChatSessionManager(MemberListManager memberListManager) {
+		this.memberListManager = memberListManager;
+	}
+
+	public String handleRequest(Member requester, String destName, MemberListManager memberManger) throws RemoteException {
+    	Member dest = memberListManager.getByName(destName);
     	if (dest != null) {
-    		if (dest.sendRequest()) {
+    	    ClientAPI clientAPI = dest.getClientAPI();
+    		if (clientAPI.chatSessionRequest()) {
         		sessionList.add(new Session(requester,dest));
         		// accepter
         		return "OK";
@@ -25,17 +32,18 @@ public class ChatSessionManager {
     	}
 	}
 	
-    public void chatSessionSendMessage(String message, String destName,MemberListManager memberManger) {
-    	Member dest = memberManager.getByName(destName);
+    public void sendMessage(String message, String destName, MemberListManager memberManger) throws RemoteException {
+    	Member dest = memberListManager.getByName(destName);
     	if (dest != null) {
-    		dest.retriveMessage(message);
+            ClientAPI clientAPI = dest.getClientAPI();
+            clientAPI.receiveMessage(message);
     	}
     }
     
     public void chatSessionQuit(String memberName){
-    	int i =0;
+    	int i = 0;
     	while(i < sessionList.size()) {
-    		if (sessionList.get(i).getMember1().getUsername()==memberName) {
+    		if (sessionList.get(i).getMember1().getUsername() == memberName) {
     			sessionList.remove(i);
     			i++;
     		}

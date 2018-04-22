@@ -1,14 +1,16 @@
-package simplechat;
+package simplechat.client;
 
-import simplechat.client.ChatSessionManager;
-import simplechat.client.ConnexionManager;
-import simplechat.client.MemberListManager;
+import simplechat.server.Server;
+import simplechat.server.ServerAPI;
 
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.Scanner;
+import java.util.UUID;
 
-public class Client {
+public class Client implements ClientAPI {
 
     public static void main(String[] args)
     {
@@ -17,14 +19,15 @@ public class Client {
 
         try
         {
-            // Get serverAPI object from server
-            Registry registry = LocateRegistry.getRegistry(host);
-            serverAPI serverApi = (serverAPI) registry.lookup("serverAPI");
+            // Bind the client object to the RMI registry
+            UUID uuid = UUID.randomUUID();
+            Client obj = new Client();
+            ClientAPI stub = (ClientAPI) UnicastRemoteObject.exportObject(obj, 0);
+            Registry registry = LocateRegistry.getRegistry();
+            registry.bind(uuid.toString(), stub);
 
-            // Init managers
-            ConnexionManager connexionManager = new ConnexionManager(serverApi);
-            ChatSessionManager chatSessionManager = new ChatSessionManager(serverApi);
-            MemberListManager memberListManager = new MemberListManager(serverApi);
+            // Get ServerAPI object from registry
+            ServerAPI serverApi = (ServerAPI) registry.lookup("ServerAPI");
 
             // Ready message
             System.out.println("Ready to chat! use `connect <username>` first.");
@@ -51,20 +54,20 @@ public class Client {
                         String username = split[1];
 
                         // Connect to the server
-                        System.out.println(connexionManager.start(username));
+                        System.out.println(serverApi.memberListJoin(username, uuid));
                     }
                 }
 
                 // To disconnect from the chat
                 else if (in.equals("disconnect"))
                 {
-                    System.out.println(connexionManager.stop());
+                    System.out.println(serverApi.memberListLeave());
                 }
 
                 // To show the member list
                 else if (in.equals("showmembers"))
                 {
-                    System.out.println(memberListManager.get());
+                    System.out.println(serverApi.memberListRequest());
                 }
 
                 // To exit the app
@@ -73,7 +76,7 @@ public class Client {
                     System.exit(0);
                 }
 
-                // To test the serverAPI
+                // To test the ServerAPI
                 else if (in.equals("hello"))
                 {
                     String response = serverApi.sayHello();
@@ -92,5 +95,18 @@ public class Client {
             System.err.println("Client exception: " + e.toString());
             e.printStackTrace();
         }
+    }
+
+    public void receiveMessage(String message)
+    {
+        System.out.println(message);
+    }
+
+    public boolean chatSessionRequest()
+    {
+        System.out.println("Would you like to start a chat ? (y/N)");
+        Scanner inputScan = new Scanner(System.in);
+        String in = inputScan.nextLine();
+        return in.equals("y");
     }
 }
