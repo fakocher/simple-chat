@@ -10,11 +10,11 @@ public interface ServerAPI extends Remote {
     String sayHello() throws RemoteException;
 
     String memberListJoin(String username, UUID uuid) throws RemoteException, ServerNotActiveException, NotBoundException;
-    String memberListLeave() throws RemoteException, ServerNotActiveException;
+    String memberListLeave(UUID uuid) throws RemoteException, ServerNotActiveException;
 
-    String chatSessionRequest() throws RemoteException;
-    String chatSessionSendMessage() throws RemoteException;
-    String chatSessionQuit() throws RemoteException;
+    String chatSessionRequest(String username, UUID uuid) throws RemoteException;
+    String chatSessionSendMessage(String message, UUID uuid) throws RemoteException;
+    String chatSessionQuit(UUID uuid) throws RemoteException;
 
-    String memberListRequest() throws RemoteException, ServerNotActiveException;
+    String memberListRequest(UUID uuid) throws RemoteException, ServerNotActiveException;
 }

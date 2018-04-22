@@ -41,14 +41,14 @@ public class Server implements ServerAPI {
         }
     }
 
-    private void printClientError(String clientHost, String error)
+    private void printClientError(UUID uuid, String error)
     {
-        System.err.println(clientHost + " client error: " + error);
+        System.err.println(uuid.toString() + " client error: " + error);
     }
 
-    private void printClientInfo(String clientHost, String info)
+    private void printClientInfo(UUID uuid, String info)
     {
-        System.out.println(clientHost + " client info: " + info);
+        System.out.println(uuid.toString() + " client info: " + info);
     }
 
     @Override
@@ -58,54 +58,75 @@ public class Server implements ServerAPI {
 
     // TODO
     @Override
-    public String chatSessionRequest() {
-        return "chatSessionRequest to be implemented";
-    }
-
-    // TODO
-    @Override
-    public String chatSessionSendMessage() {
-        return "chatSessionSendMessage to be implemented";
-    }
-
-    // TODO
-    @Override
-    public String chatSessionQuit() {
-        return "chatSessionQuit to be implemented";
-    }
-
-    @Override
-    public String memberListJoin(String username, UUID uuid) throws ServerNotActiveException, RemoteException, NotBoundException {
-        // Add user to member list
-        String clientHost = RemoteServer.getClientHost();
-        if (!this.memberListManager.add(username, clientHost, uuid))
+    public String chatSessionRequest(String username, UUID uuid) throws RemoteException {
+        // Request the chat session
+        if (!this.chatSessionManager.handleRequest(username, uuid))
         {
-            this.printClientError(clientHost, "tried to connect but already connected.");
-            return "Already connected to the chat.";
+            this.printClientError(uuid, "could not start a chat session.");
+            return "User not found or connexion refused.";
         }
 
-        this.printClientInfo(clientHost, "added to the member list with username \"" + username + "\".");
+        this.printClientInfo(uuid, "now chatting with \"" + username + "\".");
+        return "You are now chatting with \"" + username + "\".";
+    }
+
+    // TODO
+    @Override
+    public String chatSessionSendMessage(String message, UUID uuid) throws RemoteException {
+        // Send a message to the current chat session
+        if (!this.chatSessionManager.sendMessage(message, uuid))
+        {
+            this.printClientError(uuid, "could not send a message.");
+            return "Could not send the message.";
+        }
+
+        this.printClientInfo(uuid, "sent a message.");
+        return "";
+    }
+
+    // TODO
+    @Override
+    public String chatSessionQuit(UUID uuid) throws RemoteException {
+        // Quit a chat session
+        if (!this.chatSessionManager.chatSessionQuit(uuid))
+        {
+            this.printClientError(uuid, "could not quit chat session");
+            return "Could not quit chat session.";
+        }
+
+        this.printClientInfo(uuid, "quit the current chat session.");
+        return "You successfully quit the current chat session.";
+    }
+
+    @Override
+    public String memberListJoin(String username, UUID uuid) throws RemoteException, NotBoundException {
+        // Add user to member list
+        if (!this.memberListManager.add(username, uuid))
+        {
+            this.printClientError(uuid, "tried to connect but already connected or username already exists.");
+            return "Already connected to the chat or username already exists.";
+        }
+
+        this.printClientInfo(uuid, "added to the member list with username \"" + username + "\".");
         return "Connected to the chat with username \"" + username + "\".";
     }
 
     @Override
-    public String memberListLeave() throws ServerNotActiveException
+    public String memberListLeave(UUID uuid) throws ServerNotActiveException
     {
         // Remove user from member list
-        String clientHost = RemoteServer.getClientHost();
-        if (!this.memberListManager.remove(clientHost))
+        if (!this.memberListManager.remove(uuid))
         {
-            this.printClientError(clientHost, "tried to disconnect but already disconnected.");
+            this.printClientError(uuid, "tried to disconnect but already disconnected.");
             return "Already disconnected from chat.";
         }
 
-        this.printClientInfo(clientHost, "disconnected from chat.");
+        this.printClientInfo(uuid, "disconnected from chat.");
         return "Successfully disconnected from chat.";
     }
 
     @Override
-    public String memberListRequest() throws ServerNotActiveException {
-        String clientHost = RemoteServer.getClientHost();
-        return this.memberListManager.toString(clientHost);
+    public String memberListRequest(UUID uuid) throws ServerNotActiveException {
+        return this.memberListManager.toString(uuid);
     }
 }

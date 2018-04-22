@@ -13,8 +13,8 @@ class MemberListManager {
 
     private ArrayList<Member> memberList = new ArrayList<>();
 
-    boolean add(String username, String clientHost, UUID uuid) throws RemoteException, NotBoundException {
-        if (this.memberListContainsHost(clientHost, uuid))
+    boolean add(String username, UUID uuid) throws RemoteException, NotBoundException {
+        if (this.memberListContainsHost(uuid) || this.usernameExists(username))
         {
             return false;
         }
@@ -23,25 +23,30 @@ class MemberListManager {
         Registry registry = LocateRegistry.getRegistry();
         ClientAPI clientApi = (ClientAPI) registry.lookup(uuid.toString());
 
-        Member newMember = new Member(username, clientHost, uuid, clientApi);
+        Member newMember = new Member(username, uuid, clientApi);
         this.memberList.add(newMember);
         return true;
     }
 
-    private boolean memberListContainsHost(String clientHost, UUID uuid)
+    private boolean memberListContainsHost(UUID uuid)
     {
         for(Member member: this.memberList)
         {
-            if(member.getClientHost().equals(clientHost) && member.getClientUUID() == uuid)
+            if(member.getClientUUID().equals(uuid))
                 return true;
         }
 
         return false;
     }
 
-    boolean remove(String clientHost)
+    private boolean usernameExists(String username)
     {
-        Member member = this.get(clientHost);
+        return this.getByName(username) != null;
+    }
+
+    boolean remove(UUID uuid)
+    {
+        Member member = this.getByUUID(uuid);
 
         if(member == null)
         {
@@ -52,11 +57,11 @@ class MemberListManager {
         return true;
     }
 
-    private Member get(String clientHost)
+    Member getByUUID(UUID uuid)
     {
         for(Member member: this.memberList)
         {
-            if(member.getClientHost().equals(clientHost))
+            if(member.getClientUUID().equals(uuid))
                 return member;
         }
 
@@ -74,7 +79,7 @@ class MemberListManager {
         return null;
     }
 
-    String toString(String clientHost)
+    String toString(UUID uuid)
     {
         if (memberList.size() == 0)
         {
@@ -87,10 +92,12 @@ class MemberListManager {
         {
             sb.append(member.getUsername());
 
-            if (member.getClientHost().equals(clientHost))
+            if (member.getClientUUID().equals(uuid))
             {
                 sb.append(" (you)");
             }
+
+            sb.append("\n");
         }
 
         return sb.toString();

@@ -37,7 +37,6 @@ public class Client implements ClientAPI {
             while(true)
             {
                 // Ask for input
-                System.out.print("> ");
                 String in = inputScan.nextLine();
 
                 // To connect to the chat
@@ -61,13 +60,55 @@ public class Client implements ClientAPI {
                 // To disconnect from the chat
                 else if (in.equals("disconnect"))
                 {
-                    System.out.println(serverApi.memberListLeave());
+                    System.out.println(serverApi.memberListLeave(uuid));
                 }
 
                 // To show the member list
                 else if (in.equals("showmembers"))
                 {
-                    System.out.println(serverApi.memberListRequest());
+                    System.out.println(serverApi.memberListRequest(uuid));
+                }
+
+                // To request a chat session
+                else if (in.startsWith("requestchat"))
+                {
+                    // Get username, error if not specified
+                    String[] split = in.split(" ");
+                    if (split.length == 1)
+                    {
+                        System.out.println("Please specify a fellow username.");
+                    }
+                    else
+                    {
+                        String username = split[1];
+
+                        // Connect to the server
+                        System.out.println(serverApi.chatSessionRequest(username, uuid));
+                    }
+                }
+
+                // To quit current chat session
+                else if (in.equals("quitsession"))
+                {
+                    System.out.println(serverApi.chatSessionQuit(uuid));
+                }
+
+                // To send a message
+                else if (in.startsWith("message"))
+                {
+                    // Get message, error if not specified
+                    String[] split = in.split(" ");
+                    if (split.length == 1)
+                    {
+                        System.out.println("Please specify a message.");
+                    }
+                    else
+                    {
+                        String message = split[1];
+
+                        // Connect to the server
+                        System.out.println(serverApi.chatSessionSendMessage(message, uuid));
+                    }
                 }
 
                 // To exit the app
