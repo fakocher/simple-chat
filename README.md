@@ -18,3 +18,11 @@ This is a simple chat created for the first lab of the Msc course Advanced Softw
 - `message <message>`: send a message to the current chat session
 - `quitsession`: quit the current chat session
 - `disconnect`: to leave the chat group
+
+## Known issues
+
+- Cross-network usage not tested, only `localhost`
+- The program should stop main input stream scanner when asking if user accepts session
+- The user can start a session with hers/himself
+- Can't make the `.jar` artifacts work, must run classes
+- Error messages to be improved
