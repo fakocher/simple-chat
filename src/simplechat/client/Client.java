@@ -10,6 +10,15 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.Scanner;
 import java.util.UUID;
 
+/*
+ * Date : 04/2018
+ * Description : 
+ * 1. client console allows users to call different functionalities of server 
+ * 		=> ex: connect/disconnect, display the member list...
+ * 2. provides 2 functionalities for server
+ * 		=> receiveMessage : deliver the message from server
+ * 		=> chatSessionRequest : request from server to client for starting a chat session
+ */
 public class Client implements ClientAPI {
 
     public static void main(String[] args)
@@ -137,12 +146,14 @@ public class Client implements ClientAPI {
             e.printStackTrace();
         }
     }
-
+    
+    // print the message sent by server
     public void receiveMessage(String message)
     {
         System.out.println(message);
     }
 
+    // request from server to ask user for stating a chat session
     public boolean chatSessionRequest()
     {
         System.out.println("Would you like to start a chat ? (y/N)");

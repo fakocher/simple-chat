@@ -8,15 +8,25 @@ import java.rmi.server.RemoteServer;
 import java.rmi.server.UnicastRemoteObject;
 import java.rmi.server.ServerNotActiveException;
 import java.util.UUID;
-
+/*
+ * Date : 04/2018
+ * Description : 
+ * server console provide different functionalities :
+ * 		1. memberListJoin : add a new member to memberList when connection
+ * 		2. memberListLeave : remove member from memberList when disconnection
+ * 		3. memberListRequest : show memberList (all members connected)
+ * 
+ * 		4. chatSessionRequest : start a chat session
+ * 		5. chatSessionSendMessage : send a message 
+ * 		6. chatSessionQuit : stop a chat session
+ */
 public class Server implements ServerAPI {
-
     private ChatSessionManager chatSessionManager;
     private MemberListManager memberListManager;
 
     public Server() {
-        memberListManager = new MemberListManager();
-        chatSessionManager = new ChatSessionManager(memberListManager);
+        memberListManager = new MemberListManager(); // members who connect to server
+        chatSessionManager = new ChatSessionManager(memberListManager); // chat sessions
     }
 
     public static void main(String args[])
@@ -41,11 +51,13 @@ public class Server implements ServerAPI {
         }
     }
 
+    // print info when error
     private void printClientError(UUID uuid, String error)
     {
         System.err.println(uuid.toString() + " client error: " + error);
     }
 
+    // print client info
     private void printClientInfo(UUID uuid, String info)
     {
         System.out.println(uuid.toString() + " client info: " + info);
@@ -56,7 +68,11 @@ public class Server implements ServerAPI {
         return "Hello, world!";
     }
 
-    // TODO
+    /* open chat session manager
+     * call chatSessionManager.handleRequest with receiver's username and requester's uuid
+     * the receiver's username allows to identify receiver's ip for sending the request
+     * the requester's uuid and reciver's username allow to create a chat session
+    */
     @Override
     public String chatSessionRequest(String username, UUID uuid) throws RemoteException {
         // Request the chat session
@@ -65,12 +81,15 @@ public class Server implements ServerAPI {
             this.printClientError(uuid, "could not start a chat session.");
             return "User not found or connexion refused.";
         }
-
+        
         this.printClientInfo(uuid, "now chatting with \"" + username + "\".");
         return "You are now chatting with \"" + username + "\".";
     }
 
-    // TODO
+    /* Send message to receiver
+     * call chatSessionManager.sendMessage by passing message and requester's uuid
+     * this uuid allows to identify the requester's session and his receiver
+    */
     @Override
     public String chatSessionSendMessage(String message, UUID uuid) throws RemoteException {
         // Send a message to the current chat session
@@ -84,7 +103,7 @@ public class Server implements ServerAPI {
         return "";
     }
 
-    // TODO
+    // quit chat session manager
     @Override
     public String chatSessionQuit(UUID uuid) throws RemoteException {
         // Quit a chat session
@@ -99,6 +118,7 @@ public class Server implements ServerAPI {
     }
 
     @Override
+    // add a new member to members list when connection
     public String memberListJoin(String username, UUID uuid) throws RemoteException, NotBoundException {
         // Add user to member list
         if (!this.memberListManager.add(username, uuid))
@@ -112,6 +132,7 @@ public class Server implements ServerAPI {
     }
 
     @Override
+    // remove member from members List when disconnection
     public String memberListLeave(UUID uuid) throws ServerNotActiveException
     {
         // Remove user from member list
@@ -126,6 +147,7 @@ public class Server implements ServerAPI {
     }
 
     @Override
+    // show all members connected to server
     public String memberListRequest(UUID uuid) throws ServerNotActiveException {
         return this.memberListManager.toString(uuid);
     }
