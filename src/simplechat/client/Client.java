@@ -2,6 +2,7 @@ package simplechat.client;
 
 import simplechat.server.Server;
 import simplechat.server.ServerAPI;
+import sun.font.TrueTypeFont;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -29,11 +30,12 @@ public class Client implements ClientAPI {
         try
         {
             // Bind the client object to the RMI registry
-            UUID uuid = UUID.randomUUID();
+            UUID uuid_client = UUID.randomUUID();
+            UUID uuid = null;
             Client obj = new Client();
             ClientAPI stub = (ClientAPI) UnicastRemoteObject.exportObject(obj, 0);
             Registry registry = LocateRegistry.getRegistry();
-            registry.bind(uuid.toString(), stub);
+
 
             // Get ServerAPI object from registry
             ServerAPI serverApi = (ServerAPI) registry.lookup("ServerAPI");
@@ -48,21 +50,66 @@ public class Client implements ClientAPI {
                 // Ask for input
                 String in = inputScan.nextLine();
 
+                if (in.startsWith("signup"))
+                {
+                    String[] split = in.split(" ");
+
+                    if (split.length <3)
+                    {
+                        System.out.println("Error syntaxe : please try signup <username> <password>");
+                    }
+                    else
+                    {
+                        String username = split[1];
+                        String password = split[2];
+                        // singup to the server
+                        if (serverApi.singUp(username,password)){
+                            System.out.println("signup of " + username + " is successed ");
+                        } else {
+                            System.out.println("signup of " + username + " is failed, please retry later ");
+                        }
+                    }
+                }
+                else if (in.startsWith("login"))
+                {
+                    String[] split = in.split(" ");
+
+                    if (split.length < 3)
+                    {
+                        System.out.println("Error syntaxe : please try login <username> <password>");
+                    }
+                    else
+                    {
+                        String username = split[1];
+                        String password = split[2];
+                        // singup to the server
+                        uuid=serverApi.login(username,password);
+                        if (uuid!=null){
+                            System.out.println("login of " + username + " is successed ");
+                            registry.bind(uuid.toString(), stub);
+                        } else {
+                            System.out.println("login of " + username + " is failed, please retry later ");
+                        }
+                    }
+                }
                 // To connect to the chat
-                if (in.startsWith("connect"))
+                else if (in.startsWith("connect"))
                 {
                     // Get username, error if not specified
                     String[] split = in.split(" ");
-                    if (split.length == 1)
-                    {
-                        System.out.println("Please specify a username.");
+                    if (split.length == 1) {
+                        System.out.println("Error syntaxe : please try : connect <username>");
                     }
                     else
                     {
                         String username = split[1];
 
                         // Connect to the server
-                        System.out.println(serverApi.memberListJoin(username, uuid));
+                        if (uuid==null){
+                            System.out.println("to connect to a chat, you need to login to chat server, please try : login <username> <password>");
+                        } else {
+                            System.out.println(serverApi.memberListJoin(username, uuid));
+                        }
                     }
                 }
 
@@ -160,5 +207,6 @@ public class Client implements ClientAPI {
         Scanner inputScan = new Scanner(System.in);
         String in = inputScan.nextLine();
         return in.equals("y");
+
     }
 }

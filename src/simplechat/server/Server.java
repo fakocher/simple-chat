@@ -23,8 +23,10 @@ import java.util.UUID;
 public class Server implements ServerAPI {
     private ChatSessionManager chatSessionManager;
     private MemberListManager memberListManager;
+    private Authentication authentication;
 
     public Server() {
+        authentication= new Authentication();
         memberListManager = new MemberListManager(); // members who connect to server
         chatSessionManager = new ChatSessionManager(memberListManager); // chat sessions
     }
@@ -37,7 +39,7 @@ public class Server implements ServerAPI {
             Server obj = new Server();
             ServerAPI stub = (ServerAPI) UnicastRemoteObject.exportObject(obj, 0);
             Registry registry = LocateRegistry.getRegistry();
-            registry.bind("ServerAPI", stub);
+            registry.rebind("ServerAPI", stub);
 
             System.out.println("Server ready");
 
@@ -66,6 +68,31 @@ public class Server implements ServerAPI {
     @Override
     public String sayHello() {
         return "Hello, world!";
+    }
+
+    @Override
+    public UUID login(String userName, String password) throws RemoteException {
+        UUID loginOK;
+        loginOK=authentication.login(userName,password);
+        if (loginOK!=null){
+            System.out.println("client "+userName + " has successfully connected to server ");
+
+        }else{
+            System.out.println("client "+userName + " failed to connect to server ");
+        }
+        return loginOK;
+    }
+
+    @Override
+    public boolean singUp(String userName, String password) throws RemoteException {
+        Boolean signUpOK;
+        signUpOK=authentication.singUp(userName,password);
+        if (signUpOK){
+            System.out.println("client "+userName + " has successfully sign up.");
+        }else{
+            System.out.println("client "+userName + " failed to sign up.");
+        }
+        return signUpOK;
     }
 
     /* open chat session manager

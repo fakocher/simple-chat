@@ -8,6 +8,10 @@ import java.util.UUID;
 
 public interface ServerAPI extends Remote {
     String sayHello() throws RemoteException;
+    // signup and login to chat server
+    public UUID login(String userName, String password) throws RemoteException ;
+    public boolean singUp(String userName, String password) throws RemoteException ;
+
     // add a new member into members list when connection
     String memberListJoin(String username, UUID uuid) throws RemoteException, ServerNotActiveException, NotBoundException;
     // remove member from members List when disconnection
