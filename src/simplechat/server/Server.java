@@ -1,10 +1,11 @@
 package simplechat.server;
 
+import simplechat.GlobalConstants;
+
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
-import java.rmi.server.RemoteServer;
 import java.rmi.server.UnicastRemoteObject;
 import java.rmi.server.ServerNotActiveException;
 import java.util.UUID;
@@ -74,9 +75,14 @@ public class Server implements ServerAPI {
     public UUID login(String userName, String password) throws RemoteException {
         UUID loginOK;
         loginOK=authentication.login(userName,password);
-        if (loginOK!=null){
-            System.out.println("client "+userName + " has successfully connected to server ");
 
+        if (loginOK!=null){
+            System.out.println(loginOK);
+            if (loginOK.equals(GlobalConstants.UIDLOCKED)){
+                System.out.println("login of " + userName + " is locked, nb of connexion failed > 3 ");
+            } else {
+                System.out.println("client " + userName + " has successfully connected to server ");
+            }
         }else{
             System.out.println("client "+userName + " failed to connect to server ");
         }

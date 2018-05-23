@@ -1,5 +1,6 @@
 package simplechat.client;
 
+import simplechat.GlobalConstants;
 import simplechat.server.Server;
 import simplechat.server.ServerAPI;
 import sun.font.TrueTypeFont;
@@ -85,8 +86,13 @@ public class Client implements ClientAPI {
                         // singup to the server
                         uuid=serverApi.login(username,password);
                         if (uuid!=null){
-                            System.out.println("login of " + username + " is successed ");
-                            registry.bind(uuid.toString(), stub);
+                            if (uuid.equals(GlobalConstants.UIDLOCKED)){
+                                System.out.println("login of " + username + " is locked, nb of connexion failed > 3 ");
+                            } else {
+                                System.out.println("login of " + username + " is successed ");
+                                registry.bind(uuid.toString(), stub);
+                            }
+
                         } else {
                             System.out.println("login of " + username + " is failed, please retry later ");
                         }

@@ -4,9 +4,34 @@ package simplechat.server;
  * Created by kimtaing on 11.05.18.
  */
 public class Login {
+    private static final int MAX_TENTATION = 2;
     private String userEncryptedPassword;
     private String userSalt;
     private String userName;
+    private int nbFailedConnexion=0;
+    private Boolean islocked=false;
+
+    public int getNbFailedConnexion() {
+        return nbFailedConnexion;
+    }
+
+    public void NbFailedConnexion_increment() {
+
+        this.nbFailedConnexion = this.nbFailedConnexion+1;
+        if (this.nbFailedConnexion>=MAX_TENTATION){
+            this.islocked=true;
+        }
+    }
+
+    public void NbFailedConnexion_tozero() {
+        this.nbFailedConnexion = 0;
+    }
+
+    public Boolean getIslocked() {
+        return islocked;
+    }
+
+
 
     public String getUserEncryptedPassword() {
         return userEncryptedPassword;
@@ -24,5 +49,6 @@ public class Login {
         this.userName=userName;
         this.userSalt=userSalt;
         this.userEncryptedPassword=userEncryptedPassword;
+        this.islocked=false;
     }
 }

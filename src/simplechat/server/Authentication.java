@@ -1,8 +1,9 @@
 package simplechat.server;
 
+import simplechat.GlobalConstants;
+
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.security.SecureRandom;
 import java.security.spec.KeySpec;
@@ -18,25 +19,34 @@ import java.util.UUID;
 public class Authentication  {
     private Map<String, Login> userDatabase = new HashMap<String,Login>();
 
+
+
     // login with username and password
     public UUID login(String userName, String password) throws RemoteException {
         UUID uuid = UUID.randomUUID();
         Login user = userDatabase.get(userName);
-        if (user == null) {
-            return null;
-        } else {
-            try {
-                String salt = user.getUserSalt();
-                String calculatedHash = getEncryptedPassword(password, salt);
-                if (calculatedHash.equals(user.getUserEncryptedPassword())) {
-                    return uuid;
-                } else {
+        if (user.getIslocked()){
+            return GlobalConstants.UIDLOCKED;
+        }
+        else {
+            if (user == null) {
+                return null;
+            } else {
+                try {
+                    String salt = user.getUserSalt();
+                    String calculatedHash = getEncryptedPassword(password, salt);
+                    if (calculatedHash.equals(user.getUserEncryptedPassword())) {
+                        user.NbFailedConnexion_tozero();
+                        return uuid;
+                    } else {
+                        user.NbFailedConnexion_increment();
+                        return null;
+                    }
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                    e.printStackTrace();
                     return null;
                 }
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                e.printStackTrace();
-                return null;
             }
         }
     }
