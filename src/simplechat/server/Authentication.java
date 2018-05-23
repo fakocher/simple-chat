@@ -19,8 +19,6 @@ import java.util.UUID;
 public class Authentication  {
     private Map<String, Login> userDatabase = new HashMap<String,Login>();
 
-
-
     // login with username and password
     public UUID login(String userName, String password) throws RemoteException {
         UUID uuid = UUID.randomUUID();

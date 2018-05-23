@@ -1,10 +1,12 @@
 package simplechat.server;
 
+import simplechat.GlobalConstants;
+
 /**
  * Created by kimtaing on 11.05.18.
  */
 public class Login {
-    private static final int MAX_TENTATION = 2;
+
     private String userEncryptedPassword;
     private String userSalt;
     private String userName;
@@ -18,7 +20,7 @@ public class Login {
     public void NbFailedConnexion_increment() {
 
         this.nbFailedConnexion = this.nbFailedConnexion+1;
-        if (this.nbFailedConnexion>=MAX_TENTATION){
+        if (this.nbFailedConnexion>=GlobalConstants.MAX_TENTATION){
             this.islocked=true;
         }
     }
@@ -30,7 +32,6 @@ public class Login {
     public Boolean getIslocked() {
         return islocked;
     }
-
 
 
     public String getUserEncryptedPassword() {
