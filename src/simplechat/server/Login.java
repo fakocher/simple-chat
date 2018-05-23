@@ -20,7 +20,7 @@ public class Login {
     public void NbFailedConnexion_increment() {
 
         this.nbFailedConnexion = this.nbFailedConnexion+1;
-        if (this.nbFailedConnexion>=GlobalConstants.MAX_TENTATION){
+        if (this.nbFailedConnexion>=GlobalConstants.MAX_NBFAILEDCONNEXION){
             this.islocked=true;
         }
     }
