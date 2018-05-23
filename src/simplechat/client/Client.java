@@ -87,7 +87,7 @@ public class Client implements ClientAPI {
                         uuid=serverApi.login(username,password);
                         if (uuid!=null){
                             if (uuid.equals(GlobalConstants.UIDLOCKED)){
-                                System.out.println("login of " + username + " is locked, nb of connexion failed > " + GlobalConstants.MAX_TENTATION);
+                                System.out.println("login of " + username + " is locked, nb of connexion failed > " + GlobalConstants.MAX_NBFAILEDCONNEXION);
                             } else {
                                 System.out.println("login of " + username + " is successed ");
                                 registry.bind(uuid.toString(), stub);

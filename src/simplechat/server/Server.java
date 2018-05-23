@@ -78,7 +78,7 @@ public class Server implements ServerAPI {
 
         if (loginOK!=null){
             if (loginOK.equals(GlobalConstants.UIDLOCKED)){
-                System.out.println("login of " + userName + " is locked, nb of connexion failed >  " + GlobalConstants.MAX_TENTATION);
+                System.out.println("login of " + userName + " is locked, nb of connexion failed >  " + GlobalConstants.MAX_NBFAILEDCONNEXION);
             } else {
                 System.out.println("client " + userName + " has successfully connected to server ");
             }
