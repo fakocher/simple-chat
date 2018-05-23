@@ -2,12 +2,17 @@ package simplechat.server;
 
 import simplechat.GlobalConstants;
 
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+import javax.rmi.ssl.SslRMIClientSocketFactory;
+import javax.rmi.ssl.SslRMIServerSocketFactory;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
-import java.rmi.server.UnicastRemoteObject;
 import java.rmi.server.ServerNotActiveException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.UUID;
 /*
  * Date : 04/2018
@@ -36,10 +41,21 @@ public class Server implements ServerAPI {
     {
         try
         {
+            // Set SSL settings
+            String SSLPass = "password";
+            System.setProperty("javax.net.ssl.debug", "all");
+            System.setProperty("javax.net.ssl.keyStore", "C:\\ssl\\keystore-server.jks");
+            System.setProperty("javax.net.ssl.keyStorePassword", SSLPass);
+            System.setProperty("javax.net.ssl.trustStore", "C:\\ssl\\truststore-server.jks");
+            System.setProperty("javax.net.ssl.trustStorePassword", SSLPass);
+            
             // Bind the server object to the RMI registry
             Server obj = new Server();
-            ServerAPI stub = (ServerAPI) UnicastRemoteObject.exportObject(obj, 0);
-            Registry registry = LocateRegistry.getRegistry();
+            SslRMIClientSocketFactory csf = new SslRMIClientSocketFactory();
+            SslRMIServerSocketFactory ssf = new SslRMIServerSocketFactory();
+            ServerAPI stub = (ServerAPI) UnicastRemoteObject.exportObject(obj,0, csf, ssf);
+            LocateRegistry.createRegistry(5678, csf, ssf);
+            Registry registry = LocateRegistry.getRegistry(5678);
             registry.rebind("ServerAPI", stub);
 
             System.out.println("Server ready");

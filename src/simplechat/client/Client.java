@@ -3,9 +3,9 @@ package simplechat.client;
 import simplechat.GlobalConstants;
 import simplechat.server.Server;
 import simplechat.server.ServerAPI;
-import sun.font.TrueTypeFont;
 
-import java.rmi.RemoteException;
+import javax.rmi.ssl.SslRMIClientSocketFactory;
+import javax.rmi.ssl.SslRMIServerSocketFactory;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
@@ -30,12 +30,22 @@ public class Client implements ClientAPI {
 
         try
         {
+            // Set SSL settings
+            String SSLPass = "password";
+            System.setProperty("javax.net.ssl.debug", "all");
+            System.setProperty("javax.net.ssl.keyStore", "C:\\ssl\\keystore-server.jks");
+            System.setProperty("javax.net.ssl.keyStorePassword", SSLPass);
+            System.setProperty("javax.net.ssl.trustStore", "C:\\ssl\\truststore-server.jks");
+            System.setProperty("javax.net.ssl.trustStorePassword", SSLPass);
+
             // Bind the client object to the RMI registry
             UUID uuid_client = UUID.randomUUID();
             UUID uuid = null;
             Client obj = new Client();
-            ClientAPI stub = (ClientAPI) UnicastRemoteObject.exportObject(obj, 0);
-            Registry registry = LocateRegistry.getRegistry();
+            SslRMIClientSocketFactory csf = new SslRMIClientSocketFactory();
+            SslRMIServerSocketFactory ssf = new SslRMIServerSocketFactory();
+            ClientAPI stub = (ClientAPI) UnicastRemoteObject.exportObject(obj, 0, csf, ssf);
+            Registry registry = LocateRegistry.getRegistry( 1234);
 
 
             // Get ServerAPI object from registry
