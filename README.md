@@ -11,7 +11,8 @@ This is a simple chat created for the first lab of the Msc course Advanced Softw
 - Run the `Client` class. It should output `Ready to chat!`. Test the API by typing the `hello` command.
 
 ## Client commands
-
+- `signup <username> <password>`
+- `login <username> <password>`
 - `connect <username>`: to join the chat group
 - `showmembers`: to request and show the list of all connected members
 - `requestchat <username>`: request a chat session with someone
