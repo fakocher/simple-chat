@@ -12,8 +12,7 @@ This is a simple chat created for the first lab of the Msc course Advanced Softw
 
 ## Client commands
 - `signup <username> <password>` : to signup to server
-- `login <username> <password>` : to login to server
-- `connect <username>`: to join the chat group
+- `login <username> <password>` : to login to server and join the chat group
 - `showmembers`: to request and show the list of all connected members
 - `requestchat <username>`: request a chat session with someone
 - `message <message>`: send a message to the current chat session
