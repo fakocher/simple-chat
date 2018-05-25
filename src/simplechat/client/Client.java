@@ -109,27 +109,7 @@ public class Client implements ClientAPI {
                         }
                     }
                 }
-                /* To connect to the chat
-                else if (in.startsWith("connect"))
-                {
-                    // Get username, error if not specified
-                    String[] split = in.split(" ");
-                    if (split.length == 1) {
-                        System.out.println("Error syntaxe : please try : connect <username>");
-                    }
-                    else
-                    {
-                        String username = split[1];
 
-                        // Connect to the server
-                        if (uuid==null){
-                            System.out.println("to connect to a chat, you need to login to chat server, please try : login <username> <password>");
-                        } else {
-
-                        }
-                    }
-                }
-                */
                 // To disconnect from the chat
                 else if (in.equals("logout"))
                 {
