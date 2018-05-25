@@ -54,8 +54,7 @@ public class Server implements ServerAPI {
             SslRMIClientSocketFactory csf = new SslRMIClientSocketFactory();
             SslRMIServerSocketFactory ssf = new SslRMIServerSocketFactory();
             ServerAPI stub = (ServerAPI) UnicastRemoteObject.exportObject(obj,0, csf, ssf);
-            LocateRegistry.createRegistry(5678, csf, ssf);
-            Registry registry = LocateRegistry.getRegistry(5678);
+            Registry registry = LocateRegistry.getRegistry(0);
             registry.rebind("ServerAPI", stub);
 
             System.out.println("Server ready");

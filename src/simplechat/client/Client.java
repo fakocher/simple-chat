@@ -45,7 +45,7 @@ public class Client implements ClientAPI {
             SslRMIClientSocketFactory csf = new SslRMIClientSocketFactory();
             SslRMIServerSocketFactory ssf = new SslRMIServerSocketFactory();
             ClientAPI stub = (ClientAPI) UnicastRemoteObject.exportObject(obj, 0, csf, ssf);
-            Registry registry = LocateRegistry.getRegistry( 1234);
+            Registry registry = LocateRegistry.getRegistry( 0);
 
 
             // Get ServerAPI object from registry
