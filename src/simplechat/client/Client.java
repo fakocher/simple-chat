@@ -33,7 +33,7 @@ public class Client implements ClientAPI {
             // Set SSL settings
             String SSLPass = "password";
             System.setProperty("javax.net.ssl.debug", "all");
-            System.setProperty("javax.net.ssl.keyStore", "C:\\ssl\\keystore-server.jks");
+            System.setProperty("javax.net.ssl.keyStore", "C:\\ssl\\keystore-client.jks");
             System.setProperty("javax.net.ssl.keyStorePassword", SSLPass);
             System.setProperty("javax.net.ssl.trustStore", "C:\\ssl\\truststore-server.jks");
             System.setProperty("javax.net.ssl.trustStorePassword", SSLPass);
