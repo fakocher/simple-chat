@@ -4,8 +4,9 @@ This is a simple chat created for the first lab of the Msc course Advanced Softw
 
 ## Usage
 
+- Edit the `SSL_PATH` constant in the `GlobalConstants` file. Set it to the path of the SSL directory.
+- Build the Java project (we used IntelliJ IDEA).
 - Add the Java classes root path `<path-to-project>/out/production/simple-chat` to your environment variable `CLASSPATH`.
-- Build the project (we used IntelliJ IDEA)
 - Run `start rmiregistry`. It should open a blank CLI.
 - Run the `Server` class with Java (from your favorite CLI or IDE). It should output `Server ready`.
 - Run the `Client` class. It should output `Ready to chat!`. Test the API by typing the `hello` command.

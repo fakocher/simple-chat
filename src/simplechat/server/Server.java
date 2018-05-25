@@ -44,9 +44,9 @@ public class Server implements ServerAPI {
             // Set SSL settings
             String SSLPass = "password";
             System.setProperty("javax.net.ssl.debug", "all");
-            System.setProperty("javax.net.ssl.keyStore", "C:\\ssl\\keystore-server.jks");
+            System.setProperty("javax.net.ssl.keyStore", GlobalConstants.SSL_PATH + "keystore-server.jks");
             System.setProperty("javax.net.ssl.keyStorePassword", SSLPass);
-            System.setProperty("javax.net.ssl.trustStore", "C:\\ssl\\truststore-client.jks");
+            System.setProperty("javax.net.ssl.trustStore", GlobalConstants.SSL_PATH + "truststore-client.jks");
             System.setProperty("javax.net.ssl.trustStorePassword", SSLPass);
             
             // Bind the server object to the RMI registry
