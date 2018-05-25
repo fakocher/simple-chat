@@ -147,7 +147,7 @@ public class Server implements ServerAPI {
         }
 
         this.printClientInfo(uuid, "sent a message.");
-        return "";
+        return "Sent message \"" + message + "\".";
     }
 
     // quit chat session manager

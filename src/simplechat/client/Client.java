@@ -52,14 +52,19 @@ public class Client implements ClientAPI {
             ServerAPI serverApi = (ServerAPI) registry.lookup("ServerAPI");
 
             // Ready message
-            System.out.println("Ready to chat! use `connect <username>` first.");
+            System.out.println();
+            System.out.println("Ready to chat! Type `help` to display the list of commands.");
+            System.out.println();
 
             // Start the user input infinite loop
             Scanner inputScan = new Scanner(System.in);
             while(true)
             {
                 // Ask for input
+                System.out.print("> ");
                 String in = inputScan.nextLine();
+
+                System.out.println();
 
                 if (in.startsWith("signup"))
                 {
@@ -67,17 +72,18 @@ public class Client implements ClientAPI {
 
                     if (split.length <3)
                     {
-                        System.out.println("Error syntaxe : please try signup <username> <password>");
+                        System.out.println("Syntax error : please try `signup <username> <password>`");
                     }
                     else
                     {
                         String username = split[1];
                         String password = split[2];
-                        // singup to the server
+
+                        // Sign up to the server
                         if (serverApi.singUp(username,password)){
-                            System.out.println("signup of " + username + " is successed ");
+                            System.out.println("Successfully signed up with username \"" + username + "\".");
                         } else {
-                            System.out.println("signup of " + username + " is failed, please retry later ");
+                            System.out.println("Failed signing up with username \"" + username + "\".");
                         }
                     }
                 }
@@ -87,7 +93,7 @@ public class Client implements ClientAPI {
 
                     if (split.length < 3)
                     {
-                        System.out.println("Error syntaxe : please try login <username> <password>");
+                        System.out.println("Syntax error : please try `login <username> <password>`");
                     }
                     else
                     {
@@ -97,15 +103,15 @@ public class Client implements ClientAPI {
                         uuid=serverApi.login(username,password);
                         if (uuid!=null){
                             if (uuid.equals(GlobalConstants.UIDLOCKED)){
-                                System.out.println("login of " + username + " is locked, nb of connexion failed > " + GlobalConstants.MAX_NBFAILEDCONNEXION);
+                                System.out.println("User \"" + username + "\" was locked after " + (GlobalConstants.MAX_NBFAILEDCONNEXION + 1) + " unsuccessful connexions.");
                             } else {
-                                System.out.println("login of " + username + " is successed ");
+                                System.out.println("Successfully logged in with username `" + username + "`.");
                                 registry.bind(uuid.toString(), stub);
                                 System.out.println(serverApi.memberListJoin(username, uuid));
                             }
 
                         } else {
-                            System.out.println("login of " + username + " is failed, please retry later ");
+                            System.out.println("Failed to login with username \"" + username + "\".");
                         }
                     }
                 }
@@ -129,7 +135,7 @@ public class Client implements ClientAPI {
                     String[] split = in.split(" ");
                     if (split.length == 1)
                     {
-                        System.out.println("Please specify a fellow username.");
+                        System.out.println("Please specify a fellow user's name. Use `showmembers`to show the other members names.");
                     }
                     else
                     {
@@ -177,10 +183,10 @@ public class Client implements ClientAPI {
                     System.out.println("response: " + response);
                 }
 
-                // Error message if command is invalid
-                else
+                // List of commands
+                else if (in.equals("help"))
                 {
-                    System.out.println("Invalid command. Here are the commands you can use:");
+                    System.out.println("Here are the commands you can use:");
                     System.out.println();
                     System.out.println(" - signup <username> <password>");
                     System.out.println(" - login <username> <password>");
@@ -192,6 +198,12 @@ public class Client implements ClientAPI {
                     System.out.println(" - exit");
                 }
 
+                // Error message if command is invalid
+                else
+                {
+                    System.out.println("Invalid command. Type `help` for the list of commands.");
+                }
+
                 System.out.println();
             }
         }
@@ -201,20 +213,37 @@ public class Client implements ClientAPI {
             e.printStackTrace();
         }
     }
-    
+
     // print the message sent by server
     public void receiveMessage(String message)
     {
+        System.out.println();
         System.out.println(message);
+        System.out.println();
+    }
+    
+    // print the message sent by server
+    public void receiveMessage(String message, String username)
+    {
+        System.out.println();
+        System.out.println(username + " said: " + message);
+        System.out.println();
     }
 
     // request from server to ask user for stating a chat session
-    public boolean chatSessionRequest()
+    public boolean chatSessionRequest(String username)
     {
-        System.out.println("Would you like to start a chat ? (y/N)");
+        System.out.println("Would you like to start a chat with " + username + "? (y/N)");
         Scanner inputScan = new Scanner(System.in);
+        System.out.print("> ");
         String in = inputScan.nextLine();
-        return in.equals("y");
+        boolean yes = in.equals("y");
 
+        if (yes)
+        {
+            System.out.println("Now chatting with " + username);
+        }
+
+        return yes;
     }
 }

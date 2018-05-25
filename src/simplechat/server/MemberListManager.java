@@ -106,8 +106,6 @@ class MemberListManager {
             {
                 sb.append(" (you)");
             }
-
-            sb.append("\n");
         }
 
         return sb.toString();

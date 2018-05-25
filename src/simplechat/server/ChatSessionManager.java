@@ -39,7 +39,7 @@ class ChatSessionManager {
     	if (dest != null) {
     		// get clientAPI to ask for starting a chat session
     	    ClientAPI clientAPI = dest.getClientAPI();
-    		if (clientAPI.chatSessionRequest()) {
+    		if (clientAPI.chatSessionRequest(requester.getUsername())) {
     			// chat session request accepted
         		sessionList.add(new Session(requester, dest));
         		return true;
@@ -64,7 +64,8 @@ class ChatSessionManager {
 
 		// Send message to receiver (dest)
     	Member dest = this.getDest(session, uuid);
-		dest.getClientAPI().receiveMessage(message);
+		Member sender = this.getSender(session, uuid);
+		dest.getClientAPI().receiveMessage(message, sender.getUsername());
 		return true;
     }
     
@@ -98,6 +99,19 @@ class ChatSessionManager {
 				return session;
 		}
 		return null;
+	}
+
+	// get sender
+	private Member getSender(Session session, UUID uuid)
+	{
+		// if one of session members has the uuid searched
+		if (session.getMember1().getClientUUID().equals(uuid))
+		{
+			// return his partner member
+			return session.getMember1();
+		}
+
+		return session.getMember2();
 	}
 
 	// get member partner 
