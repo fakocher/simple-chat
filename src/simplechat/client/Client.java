@@ -33,9 +33,9 @@ public class Client implements ClientAPI {
             // Set SSL settings
             String SSLPass = "password";
             System.setProperty("javax.net.ssl.debug", "all");
-            System.setProperty("javax.net.ssl.keyStore", "//Users//kimtaing//Documents//github//simple-chat//ssl//keystore-client.jks");
+            System.setProperty("javax.net.ssl.keyStore", "C:\\ssl\\keystore-client.jks");
             System.setProperty("javax.net.ssl.keyStorePassword", SSLPass);
-            System.setProperty("javax.net.ssl.trustStore", "//Users//kimtaing//Documents//github//simple-chat//ssl//truststore-server.jks");
+            System.setProperty("javax.net.ssl.trustStore", "C:\\ssl\\truststore-server.jks");
             System.setProperty("javax.net.ssl.trustStorePassword", SSLPass);
 
             // Bind the client object to the RMI registry
@@ -109,7 +109,27 @@ public class Client implements ClientAPI {
                         }
                     }
                 }
+                /* To connect to the chat
+                else if (in.startsWith("connect"))
+                {
+                    // Get username, error if not specified
+                    String[] split = in.split(" ");
+                    if (split.length == 1) {
+                        System.out.println("Error syntaxe : please try : connect <username>");
+                    }
+                    else
+                    {
+                        String username = split[1];
 
+                        // Connect to the server
+                        if (uuid==null){
+                            System.out.println("to connect to a chat, you need to login to chat server, please try : login <username> <password>");
+                        } else {
+
+                        }
+                    }
+                }
+                */
                 // To disconnect from the chat
                 else if (in.equals("logout"))
                 {
