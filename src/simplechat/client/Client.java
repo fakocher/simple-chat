@@ -93,7 +93,7 @@ public class Client implements ClientAPI {
                     {
                         String username = split[1];
                         String password = split[2];
-                        // singup to the server
+                        // login to the server
                         uuid=serverApi.login(username,password);
                         if (uuid!=null){
                             if (uuid.equals(GlobalConstants.UIDLOCKED)){
@@ -130,7 +130,7 @@ public class Client implements ClientAPI {
                 }
 
                 // To disconnect from the chat
-                else if (in.equals("disconnect"))
+                else if (in.equals("logout"))
                 {
                     System.out.println(serverApi.memberListLeave(uuid));
                 }
@@ -160,7 +160,7 @@ public class Client implements ClientAPI {
                 }
 
                 // To quit current chat session
-                else if (in.equals("quitsession"))
+                else if (in.equals("quitchat"))
                 {
                     System.out.println(serverApi.chatSessionQuit(uuid));
                 }
@@ -199,8 +199,19 @@ public class Client implements ClientAPI {
                 // Error message if command is invalid
                 else
                 {
-                    System.out.println("Invalid command.");
+                    System.out.println("Invalid command. Here are the commands you can use:");
+                    System.out.println();
+                    System.out.println(" - signup <username> <password>");
+                    System.out.println(" - login <username> <password>");
+                    System.out.println(" - logout");
+                    System.out.println(" - showmembers");
+                    System.out.println(" - requestchat <username>");
+                    System.out.println(" - message <message>");
+                    System.out.println(" - quitchat");
+                    System.out.println(" - exit");
                 }
+
+                System.out.println();
             }
         }
         catch (Exception e)
