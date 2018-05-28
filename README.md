@@ -17,6 +17,8 @@ This is a simple chat created for the first lab of the Msc course Advanced Softw
 - `showmembers`: to request and show the list of all connected members
 - `requestchat <username>`: request a chat session with someone
 - `message <message>`: send a message to the current chat session
+- `msgwrongcheckum <message>`: send a message with a wrong checksum (for security test purposes)
+- `msgwrongtimestamp <message>`: send a message with a wrong timestamp (for security test purposes)
 - `quitsession`: quit the current chat session
 - `disconnect`: to leave the chat group
 

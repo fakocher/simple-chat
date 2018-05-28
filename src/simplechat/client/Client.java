@@ -164,17 +164,86 @@ public class Client implements ClientAPI {
                     {
                         String message = split[1];
 
+                        //Getting UTC date
+                        Date dt = new Date();
+                        long timestamp = dt.getTime();
+
+                        //Instantiating crypto helper
+                        MessageDigest messageDigest = MessageDigest.getInstance(GlobalConstants.HASH_FUNCTION);
+                        String msgWithTimestamp = message + String.valueOf(timestamp);
+
+                        //Computing sha-256 hash
+                        byte[] fullMessage = msgWithTimestamp.getBytes(HASH_CHARSET);
+                        byte[] digest = messageDigest.digest(fullMessage);
+
+                        String strDigest = convertByteArrayToHexString(digest);
+                        //Updating message
+                        message = msgWithTimestamp + strDigest;
+
+                        // Connect to the server
+                        System.out.println(serverApi.chatSessionSendMessage(message, uuid));
+                        }
+                    }
+                }
+
+                // To send a message with a wrong timestamp
+                else if (in.startsWith("msgwrongtimestamp")) {
+
+                    if (split.length == 1) {
+                        System.out.println("Please specify a message.");
+                    } else {
+                        String message = split[1];
+
+                        // Wrong timestamp
+                        long timestamp = 1111111111111;
+
+                        //Instantiating crypto helper
+                        MessageDigest messageDigest = MessageDigest.getInstance(GlobalConstants.HASH_FUNCTION);
+                        String msgWithTimestamp = message + String.valueOf(timestamp);
+
+                        //Computing sha-256 hash
+                        byte[] fullMessage = msgWithTimestamp.getBytes(HASH_CHARSET);
+                        byte[] digest = messageDigest.digest(fullMessage);
+
+                        String strDigest = convertByteArrayToHexString(digest);
+                        //Updating message
+                        message = msgWithTimestamp + strDigest;
+
                         // Connect to the server
                         System.out.println(serverApi.chatSessionSendMessage(message, uuid));
                     }
                 }
 
+                // To send a message with a wrong checksum
+                else if (in.startsWith("msgwrongchecksum")) {
+
+                    if (split.length == 1) {
+                        System.out.println("Please specify a message.");
+                    } else {
+                        String message = split[1];
+
+                        //Getting UTC date
+                        Date dt = new Date();
+                        long timestamp = dt.getTime();
+
+                        String msgWithTimestamp = message + String.valueOf(timestamp);
+
+                        //Wrong Checksum
+                        String strDigest = "abcdefghijklmopqrstuvwxyz012345abcdefghijklmopqrstuvwxyz012345";
+
+                        //Updating message
+                        message = msgWithTimestamp + strDigest;
+
+                        // Connect to the server
+                        System.out.println(serverApi.chatSessionSendMessage(message, uuid));
+                    }
+                }
                 // To exit the app
                 else if(in.equals("exit"))
                 {
                     System.exit(0);
                 }
-
+t
                 // To test the ServerAPI
                 else if (in.equals("hello"))
                 {
@@ -216,17 +285,31 @@ public class Client implements ClientAPI {
     // print the message sent by server
     public void receiveMessage(String message)
     {
-        System.out.println();
-        System.out.println(message);
-        System.out.println();
+
+        //Security check
+        if (isVerified(message)){
+            System.out.println();
+            System.out.println(message);
+            System.out.println();
+        } else {
+            System.out.println("- Incomming message blocked -");
+            System.out.println("WARNING: SECURITY COMPROMIZED!");
+        }
+
     }
     
     // print the message sent by server
     public void receiveMessage(String message, String username)
     {
-        System.out.println();
-        System.out.println(username + " said: " + message);
-        System.out.println();
+        //Security check
+        if (isVerified(message)) {
+            System.out.println();
+            System.out.println(username + " said: " + message);
+            System.out.println();
+        }else {
+            System.out.println("- Incomming message blocked -");
+            System.out.println("WARNING: SECURITY COMPROMIZED!");
+        }
     }
 
     // request from server to ask user for stating a chat session
