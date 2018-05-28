@@ -8,6 +8,8 @@ import javax.rmi.ssl.SslRMIServerSocketFactory;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.security.MessageDigest;
+import java.util.Date;
 import java.util.Scanner;
 import java.util.UUID;
 
@@ -162,50 +164,36 @@ public class Client implements ClientAPI {
                     }
                     else
                     {
-                        String message = split[1];
+                        String message = in.substring(split[0].length() + 1);
 
-                        //Getting UTC date
-                        Date dt = new Date();
-                        long timestamp = dt.getTime();
-
-                        //Instantiating crypto helper
-                        MessageDigest messageDigest = MessageDigest.getInstance(GlobalConstants.HASH_FUNCTION);
-                        String msgWithTimestamp = message + String.valueOf(timestamp);
-
-                        //Computing sha-256 hash
-                        byte[] fullMessage = msgWithTimestamp.getBytes(HASH_CHARSET);
-                        byte[] digest = messageDigest.digest(fullMessage);
-
-                        String strDigest = convertByteArrayToHexString(digest);
-                        //Updating message
-                        message = msgWithTimestamp + strDigest;
+                        String verifiableMessage = GlobalConstants.getVerifiableMessage(message);
 
                         // Connect to the server
-                        System.out.println(serverApi.chatSessionSendMessage(message, uuid));
-                        }
+                        System.out.println(serverApi.chatSessionSendMessage(verifiableMessage, uuid));
                     }
                 }
 
                 // To send a message with a wrong timestamp
                 else if (in.startsWith("msgwrongtimestamp")) {
 
+                    String[] split = in.split(" ");
                     if (split.length == 1) {
                         System.out.println("Please specify a message.");
                     } else {
-                        String message = split[1];
+                        String message = in.substring(split[0].length() + 1);
 
                         // Wrong timestamp
-                        long timestamp = 1111111111111;
+                        long timestamp = 1111111111111L;
 
                         //Instantiating crypto helper
                         MessageDigest messageDigest = MessageDigest.getInstance(GlobalConstants.HASH_FUNCTION);
                         String msgWithTimestamp = message + String.valueOf(timestamp);
 
                         //Computing sha-256 hash
-                        byte[] fullMessage = msgWithTimestamp.getBytes(HASH_CHARSET);
+                        byte[] fullMessage = msgWithTimestamp.getBytes(GlobalConstants.HASH_CHARSET);
                         byte[] digest = messageDigest.digest(fullMessage);
 
-                        String strDigest = convertByteArrayToHexString(digest);
+                        String strDigest = GlobalConstants.convertByteArrayToHexString(digest);
                         //Updating message
                         message = msgWithTimestamp + strDigest;
 
@@ -217,10 +205,11 @@ public class Client implements ClientAPI {
                 // To send a message with a wrong checksum
                 else if (in.startsWith("msgwrongchecksum")) {
 
+                    String[] split = in.split(" ");
                     if (split.length == 1) {
                         System.out.println("Please specify a message.");
                     } else {
-                        String message = split[1];
+                        String message = in.substring(split[0].length() + 1);
 
                         //Getting UTC date
                         Date dt = new Date();
@@ -243,7 +232,7 @@ public class Client implements ClientAPI {
                 {
                     System.exit(0);
                 }
-t
+
                 // To test the ServerAPI
                 else if (in.equals("hello"))
                 {
@@ -287,7 +276,7 @@ t
     {
 
         //Security check
-        if (isVerified(message)){
+        if (GlobalConstants.isVerified(message)){
             System.out.println();
             System.out.println(message);
             System.out.println();
@@ -299,14 +288,15 @@ t
     }
     
     // print the message sent by server
-    public void receiveMessage(String message, String username)
+    public void receiveMessage(String verifiedMessage, String username)
     {
         //Security check
-        if (isVerified(message)) {
+        if (GlobalConstants.isVerified(verifiedMessage)) {
+            String message = GlobalConstants.getOriginalMessage(verifiedMessage);
             System.out.println();
             System.out.println(username + " said: " + message);
             System.out.println();
-        }else {
+        } else {
             System.out.println("- Incomming message blocked -");
             System.out.println("WARNING: SECURITY COMPROMIZED!");
         }
