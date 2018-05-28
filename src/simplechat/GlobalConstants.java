@@ -16,7 +16,7 @@ public class GlobalConstants {
     public static final String SSL_PATH = "C:\\ssl\\";
 
     //Maximal timestamp difference (in milliseconds)
-    private static final int MAX_TIMESTAMP_DELTA = 3000;
+    private static final int MAX_TIMESTAMP_DELTA = 30000;
 
     //Charset for hash encoding
     public static final String HASH_CHARSET = "UTF-8";
